@@ -20,6 +20,9 @@ class Account(models.Model):
     username = models.TextField()
     administration = models.ForeignKey(Administration,  on_delete=models.CASCADE, related_name="account")
 
+    def __str__(self):
+        return self.username
+
 # 포스트 카테고리
 class Category(models.Model):
     name = models.TextField()
@@ -32,11 +35,17 @@ class Post(models.Model):
     title = models.TextField()
     content = models.TextField()
 
+    def __str__(self):
+        return self.title
+
 # 댓글 정보
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.created
 
 class Like(models.Model):
     # 해당 포스트
