@@ -9,8 +9,8 @@ class School(models.Model):
 
 # 본전공 + 이중/복수/융합 전공
 class Administration(models.Model):
-    major = models.ForeignKey(School, on_delete=models.CASCADE, related_name="administration")
-    minor = models.ForeignKey(School, on_delete=models.CASCADE, related_name="administration")
+    major = models.ForeignKey(School, on_delete=models.CASCADE, related_name="major")
+    minor = models.ForeignKey(School, on_delete=models.CASCADE, related_name="minor")
 
 # 계정 정보
 class Account(models.Model):
@@ -28,7 +28,7 @@ class Category(models.Model):
 # 포스트 정보
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
-    category = models.ManyToManyField(Category, on_delete=models.CASCADE, related_name="posts")
+    category = models.ManyToManyField(Category, related_name="posts")
     title = models.TextField()
     content = models.TextField()
 
