@@ -9,7 +9,7 @@ urlpatterns = [
     # Post detail page
     path('post/<int:id>/', PostDetail.as_view()),
     # New Comment
-    path('post/<int:id>/newcomment', NewComment.as_view()),
+    path('post/<int:id>/newcomment/', NewComment.as_view()),
     # Comment detail page
     path('comment/<int:id>/', CommentDetail.as_view()),
     # Account edit page
