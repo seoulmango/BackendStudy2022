@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
+# 전체 포스트 리스트 (새로운 포스트 작성도 여기서 이뤄진다.)
 class PostList(APIView):
     # access to all data from db
     def get(self, request):
@@ -20,6 +21,7 @@ class PostList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# 포스트 디테일. 댓글이 있다면 댓글도 함께 보인다.
 class PostDetail(APIView):
     def get_post(self, id):
         try:
@@ -27,12 +29,14 @@ class PostDetail(APIView):
         except Post.DoesNotExist:
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
     
+    # 댓글이 있다면 가져온다.
     def get_comments(self, id):
         try:
             return Comment.objects.filter(post=self.get_post(id))
         except Comment.DoesNotExist:
             return 0
 
+    # 좋아요가 있다면 가져온다.
     def get_likes(self, id):
         try:
             return Like.objects.get(post=self.get_post(id))
@@ -42,7 +46,10 @@ class PostDetail(APIView):
     def get(self, request, id):
         post = self.get_post(id)
         comments = self.get_comments(id)
-        likes = self.get_likes(id)
+
+        # 좋아요도 함께 보여줄려면 if문이 너무 많아진다...
+        # like = self.get_likes(id)
+        # lserializer = LikeSerializer(like)
 
         pserializer = PostSerializer(post)
         # 댓글이 있는 포스트는 댓글까지 함께 보여준다.
@@ -65,7 +72,7 @@ class PostDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 카테고리 넘버로 포스트 리스트
+# 전체 리스트에서 특정 카테고리만 선택
 class CatList(APIView):
     def get_posts(self, category):
         try:
@@ -78,7 +85,27 @@ class CatList(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
+# 댓글 생성
+class NewComment(APIView):
+    def get_post(self, id):
+        try:
+            return Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
+    def get(self, request, id):
+        post = self.get_post(id)
+        pserializer = PostSerializer(post)
+        return Response(pserializer.data)
+    
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# 댓글 수정/삭제
 class CommentDetail(APIView):
     def get_comment(self, id):
         try:

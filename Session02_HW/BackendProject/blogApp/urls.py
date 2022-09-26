@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import PostList, PostDetail, CatList, CommentDetail, AccountEdit, SignUp, ToggleLike
+from .views import PostList, PostDetail, CatList, CommentDetail, AccountEdit, SignUp, ToggleLike, NewComment
 
 urlpatterns = [
     # All posts list
@@ -8,6 +8,8 @@ urlpatterns = [
     path('postlist/<int:category>/', CatList.as_view()),
     # Post detail page
     path('post/<int:id>/', PostDetail.as_view()),
+    # New Comment
+    path('post/<int:id>/newcomment', NewComment.as_view()),
     # Comment detail page
     path('comment/<int:id>/', CommentDetail.as_view()),
     # Account edit page
