@@ -124,16 +124,15 @@ class ToggleLike(APIView):
     # 좋아요 / 좋아요 취소
     def post(self, request, postid):
         like = self.get_like(postid)
-        # 여기서 유저를 User instance로 받는게 아니라, SimpleLazyObject로 받아서 에러가 뜬다...
-        user = request.user
+        account = Account.objects.get(user=request.user)
 
         # 좋아요를 누른 사람이었다면? 좋아요 취소
-        if request.user in like.like_users.all():
-            like.like_users.remove(user)
+        if account in like.like_users.all():
+            like.like_users.remove(account)
             like.save()
         # 좋아요를 처음 눌렀다면? 좋아요 추가
         else:
-            like.like_users.add(user)
+            like.like_users.add(account)
             like.save()
 
         serializer = LikeSerializer(like)
