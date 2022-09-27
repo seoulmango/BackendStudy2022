@@ -18,7 +18,7 @@ class Administration(models.Model):
 
 # 계정 정보
 class Account(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="account")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="account")
     userid = models.TextField()
     userpw = models.TextField()
     username = models.TextField()
